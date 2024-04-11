@@ -1,1 +1,1 @@
-# Main codes for "An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery"
+# "An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery"
