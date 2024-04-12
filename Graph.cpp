@@ -16,19 +16,17 @@ bool IsEqual(double a, double b)
     return (fabs(a - b) < EPS);
 }
 
-// 图的表示
 class SmallGraph {
 public:
-    std::unordered_map<int, vector<int>> adj; // 邻接表
+    std::unordered_map<int, vector<int>> adj; 
 
     void addEdge(int v, int w) {
         adj[v].push_back(w);
-        adj[w].push_back(v); // 无向图，需要添加两条边
+        adj[w].push_back(v);
     }
 
-    // 计算一个节点的聚类系数
     double clusteringCoefficient(int v) {
-        if (adj[v].size() < 2) return 0.0; // 如果邻居少于2个，聚类系数为0
+        if (adj[v].size() < 2) return 0.0; 
 
         double possibleEdges = 0.0, existingEdges = 0.0;
         for (int i = 0; i < adj[v].size(); ++i) {
@@ -42,7 +40,6 @@ public:
         return (2.0 * existingEdges) / (adj[v].size() * (adj[v].size() - 1));
     }
 
-    // 计算平均聚类系数
     double averageClusteringCoefficient() {
         double sum = 0.0;
         for (auto& p : adj) {
@@ -121,12 +118,6 @@ void Graph::enumerateKCliques(int k) {
     h_cliques.clear();
     v2cliques.clear();
     for (int i = 0; i < n; i++) v2cliques.push_back(vector<int>());
-    //clock_t begin2 = clock();
-    //vector<int> currentclique; // 当前候选 k-clique 的节点集合
-    //backtrack(0, k, currentclique);
-    //clock_t end2 = clock();
-    //double io_secs2 = double(end2 - begin2) / clocks_per_sec;
-    //cout << "time is:"<<io_secs2 << endl;
 
     clock_t begin = clock();
     if (p == 0)
@@ -166,9 +157,6 @@ void Graph::enumerateKCliques(int k) {
 void Graph::backtrack(int currentNode, int k, vector<int>& currentClique) {
     if (currentClique.size() == k) {
         h_cliques.push_back(currentClique);
-
-        // 当前候选 k-clique 已满足大小要求，处理它（如输出或其他操作）
-        // 在这里你可以自定义处理方式，比如输出当前 k-clique 的节点
         for (int node : currentClique) {
             //cout << node << " ";
             v2cliques[node].push_back(h_cliques.size() - 1);
@@ -500,17 +488,17 @@ void Graph::new_LODA()
  * deg reused here!
  */
 void Graph::pava() {
-    // 对 slt_nodes 按照 r 值进行降序排序
+   
     sort(slt_nodes.begin(), slt_nodes.end(), [this](int a, int b)->bool {
         return r[a] > r[b];
         });
 
-    // 更新 deg 数组，deg 存储节点在 slt_nodes 中的位置
+
     for (int i = 0; i < slt_nodes.size(); i++) {
         deg[slt_nodes[i]] = i;
     }
 
-    // 计算节点之间的连接数  ne[i]表示slt_nodes[i]顶点的边数
+
     vector<int> ne(slt_nodes.size(), 0);
     for (auto e : slt_edges) {
         int u = deg[edges[e].first];
@@ -518,32 +506,29 @@ void Graph::pava() {
         ne[(u > v) ? u : v]++;
     }
 
-    // 初始化 nsg、nag、val 数组
+
     nag[0] = 1;
     val[0] = ne[0];
     nsg = 0;
 
-    // 执行 PAVA 算法
-    // nag 用于表示每个稳定群中节点的数量
-    // nsg 用于表示当前的稳定群数量
+
     for (int i = 1; i < slt_nodes.size(); i++) {
-        nsg += 1;            // 增加稳定群数量
-        val[nsg] = ne[i];    // 将节点之间的连接数存储到 val 数组中
-        nag[nsg] = 1;        // 初始化 nag 数组
+        nsg += 1;            
+        val[nsg] = ne[i];    
+        nag[nsg] = 1;        
 
         while ((nsg > 0) && (val[nsg] > val[nsg - 1] - 1e-5)) {
-            // 进入循环，执行合并稳定群的过程
+          
             val[nsg - 1] = (nag[nsg] * val[nsg] + nag[nsg - 1] * val[nsg - 1]) / (nag[nsg] + nag[nsg - 1]);
-            nag[nsg - 1] += nag[nsg];  // 更新 nag 数组
-            nsg--;                    // 减少稳定群数量
+            nag[nsg - 1] += nag[nsg]; 
+            nsg--;                    
         }
     }
-    nsg++;  // 增加稳定群数量（nsg 最初是 0，所以要加 1）
+    nsg++; 
 
 
     printf("nsg %d\n", nsg);
 
-    // 更新 sg 数组: 记录每一个节点属于哪个稳定群
     int cur = 0;
     for (int i = 0; i < nsg; i++) {
         for (int j = cur; j < cur + nag[i]; j++) {
@@ -589,56 +574,48 @@ int min(vector<int>* sg, vector<int>* h_clique) {
 }
 
 void Graph::pava_h_clique() {
-    // 对 slt_nodes 按照 r 值进行降序排序
+
     sort(slt_nodes.begin(), slt_nodes.end(), [this](int a, int b)->bool {
         return r[a] > r[b];
         });
 
-    // 更新 deg 数组，deg 存储节点在 slt_nodes 中的位置
 
     for (int i = 0; i < slt_nodes.size(); i++) {
         deg[slt_nodes[i]] = i;
     }
 
-    // 计算节点之间的连接数  nc[i]表示slt_nodes[i]顶点的h-cliques数(只计算于r值最小的顶点)
+  
     vector<int> nc(slt_nodes.size(), 0);
     for (auto& hc : slt_h_cliques) {
         int max_node = 0;
         for (auto& hc_node : h_cliques[hc]) {
             if (deg[hc_node] > max_node) max_node = deg[hc_node];
         }
-        /*int max_node = max(deg, h_cliques[hc]);*/
         nc[max_node]++;
     }
 
 
 
-    // 初始化 nsg、nag、val 数组
     nag[0] = 1;
     val[0] = nc[0];
     nsg = 0;
 
-    // 执行 PAVA 算法
-    // nag 用于表示每个稳定群中节点的数量
-    // nsg 用于表示当前的稳定群数量
     for (int i = 1; i < slt_nodes.size(); i++) {
-        nsg += 1;            // 增加稳定群数量
-        val[nsg] = nc[i];    // 将节点之间的h-cliques数存储到 val 数组中
-        nag[nsg] = 1;        // 初始化 nag 数组
+        nsg += 1;           
+        val[nsg] = nc[i];    
+        nag[nsg] = 1;        
 
         while ((nsg > 0) && (val[nsg] > val[nsg - 1] - 1e-5)) {
-            // 进入循环，执行合并稳定群的过程
+
             val[nsg - 1] = (nag[nsg] * val[nsg] + nag[nsg - 1] * val[nsg - 1]) / (nag[nsg] + nag[nsg - 1]);
-            nag[nsg - 1] += nag[nsg];  // 更新 nag 数组
-            nsg--;                    // 减少稳定群数量
+            nag[nsg - 1] += nag[nsg]; 
+            nsg--;                    
         }
     }
-    nsg++;  // 增加稳定群数量（nsg 最初是 0，所以要加 1）
-
+    nsg++;  
 
     printf("nsg %d\n", nsg);
 
-    // 更新 sg 数组: 记录每一个节点属于哪个稳定群
     int cur = 0;
     for (int i = 0; i < nsg; i++) {
         for (int j = cur; j < cur + nag[i]; j++) {
@@ -648,47 +625,12 @@ void Graph::pava_h_clique() {
     }
 }
 
-//void Graph::check_sg_h_cliques() {
-//    for (int i = 0; i < h_cliques.size(); ++i) { //遍历h-cliques
-//        int max_sg = -1;
-//        // 找到h-clique中顶点所属stable group的最大编号
-//        for (auto& hc_node : h_cliques[i]) {
-//            if (sg[hc_node] > max_sg) max_sg = sg[hc_node];
-//        }
-//        double s = 0;
-//        int num = 0;
-//        for (auto& hc_node : h_cliques[i]) {
-//            if (sg[hc_node] != max_sg) {
-//                s += alpha_c[i][hc_node];
-//                alpha_c[i][hc_node] = 0;
-//                num++;
-//            }
-//        }
-//        for (auto& hc_node : h_cliques[i]) {
-//            if (sg[hc_node] == max_sg) {
-//                alpha_c[i][hc_node] += s / num;
-//            }
-//        }
-//
-//    }
-//}
 
 void Graph::check_sg_h_clique() {
-    // 如果只有一个或没有稳定群，无需处理，直接返回
+  
     if (nsg <= 1) return;
 
-    // TODO 对 slt_edges 中的边按照一定规则排序，确保后续处理的顺序
-    /*sort(slt_h_cliques.begin(), slt_h_cliques.end(), [this](int a, int b)->bool {
-        int a1 = min(sg, h_cliques[a]);
-        int a2 = max(sg, h_cliques[a]);
-        int b1 = min(sg, h_cliques[b]);
-        int b2 = max(sg, h_cliques[b]);
-        if (a1 != b1)
-            return a1 < b1;
-        else
-            return a2 < b2;
-        });*/
-        //#pragma omp parallel for 
+  
     for (auto hc : slt_h_cliques) {
         sort(h_cliques[hc].begin(), h_cliques[hc].end(), [this](int x, int y)->bool {
             return sg[x] < sg[y];
@@ -704,32 +646,18 @@ void Graph::check_sg_h_clique() {
         return false;
     });
 
-    // 创建用于存储每个稳定群是否有效的数组
+   
     vector<bool> valid(nsg);
 
-    // 创建用于计算每个稳定群中h-cliques的数量的数组
+
     vector<int> bin(nsg + 1, 0);
 
-    // 计算每个稳定群中的h-cliques数，并将结果存储在 bin 数组中
-    //for (auto& hc : slt_h_cliques) {
-    //    // 首先计算当前h_cliques所连接的节点的稳定群中较小的一个，
-    //    // 并将结果存储在变量 a 中。
-    //    // 这是为了确保h-clique被计数到稳定群的最小节点中    
-    //    int a = min(sg, h_cliques[hc]);
-    //    ++bin[a];
-    //}
-    for (auto& hc : slt_h_cliques) {
-        // 首先计算当前h_cliques所连接的节点的稳定群中较小的一个，
-        // 并将结果存储在变量 a 中。
-        // 这是为了确保h-clique被计数到稳定群的最小节点中    
+    for (auto& hc : slt_h_cliques) {  
         int a = sg[h_cliques[hc][0]];
-        //cout << a << endl;
         ++bin[a];
     }
 
 
-    // 代码计算了一个累积的数组 bin，
-    // 使得对每个稳定群的累积h-cliques数可以以常量时间复杂度访问
     int s = 0;
     for (int i = 0; i <= nsg; i++) {
         int tmp = s;
@@ -737,51 +665,48 @@ void Graph::check_sg_h_clique() {
         bin[i] = tmp;
     }
 
-    // 创建用于存储每个稳定群中节点的最大 r 值的数组
     vector<double> max_r(nsg);
 
     int cur = 0;
     for (int i = 0; i < nsg; i++) {
-        // 初始化每个稳定群的最大 r 值
         max_r[i] = r[slt_nodes[cur]];
 
-        // 计算每个稳定群中节点的最大 r 值
         for (int j = cur + 1; j < cur + nag[i]; j++) {
             max_r[i] = max(max_r[i], r[slt_nodes[j]]);
         }
         cur += nag[i];
     }
 
-    // 初始化整个图中节点的最小 r 值
-    double min_r = r[slt_nodes[0]]; // 初始化最小 r 值为第一个稳定群中节点的 r 值
-    cur = 0; // 初始化稳定群中节点索引为0
-    vector<int> cpt(bin); // 创建 bin 数组的副本，用于回滚操作
-    clock_t start = clock(); // 记录处理开始的时间
 
-    for (int i = 0; i < nsg - 1; i++) { // 迭代处理从第一个稳定群到倒数第二个稳定群的情况
-        for (int j = cur; j < cur + nag[i]; j++) { // 计算当前稳定群 i 中节点的最小 r 值
+    double min_r = r[slt_nodes[0]]; 
+    cur = 0;
+    vector<int> cpt(bin);
+    clock_t start = clock();
+
+    for (int i = 0; i < nsg - 1; i++) { 
+        for (int j = cur; j < cur + nag[i]; j++) { 
             min_r = min(min_r, r[slt_nodes[j]]);
         }
-        double min_t = min_r; // 初始化当前最小 r 值为 min_r
+        double min_t = min_r; 
 
-        vector<double> max_tmp(max_r.begin() + i + 1, max_r.end()); // 创建最大 r 值数组 max_tmp
-        double max_t = *max_element(std::begin(max_tmp), std::end(max_tmp)); // 计算最大 r 值 max_t
+        vector<double> max_tmp(max_r.begin() + i + 1, max_r.end()); 
+        double max_t = *max_element(std::begin(max_tmp), std::end(max_tmp)); 
 
-        queue<std::tuple<int, int, std::unordered_map<int, double>>> q; // 创建队列 q 用于回滚操作
-        valid[i] = true; // 假设当前稳定群有效
+        queue<std::tuple<int, int, std::unordered_map<int, double>>> q; 
+        valid[i] = true; 
 
-        for (int j = 0; j <= i; j++) { // 迭代处理从第一个稳定群到当前稳定群 i 的情况
+        for (int j = 0; j <= i; j++) { 
 
-            while (cpt[j] < bin[j + 1]) { // 遍历当前稳定群范围内未处理的h-clique  ！！假设这里顺序可以对应上
-                int hc = slt_h_cliques[cpt[j]]; // 获取当前未处理的h-clique
+            while (cpt[j] < bin[j + 1]) { 
+                int hc = slt_h_cliques[cpt[j]]; 
                 int max_sg = 0;
                 for (auto& hc_node : h_cliques[hc]) {
                     if (sg[hc_node] > max_sg) max_sg = sg[hc_node];
                 }
 
 
-                if (max_sg > i) { // 检查h-clique是否跨越当前稳定群
-                    q.push(make_tuple(j, cpt[j], alpha_c[hc])); // 存储需要回滚的h-clique和相关信息
+                if (max_sg > i) { 
+                    q.push(make_tuple(j, cpt[j], alpha_c[hc]));
 
                     double s = 0;
                     int num = 0;
@@ -803,22 +728,21 @@ void Graph::check_sg_h_clique() {
                         }
                     }
                     if (min_t <= max_t) {
-                        valid[i] = false; // 如果条件不满足，标记当前稳定群为无效
+                        valid[i] = false; 
                         break;
                     }
                 }
 
-                ++cpt[j]; // 增加当前稳定群中边的计数器
+                ++cpt[j]; 
             }
 
-            if (!valid[i]) break; // 如果当前稳定群无效，终止内部循环
+            if (!valid[i]) break;
         }
 
         if (valid[i]) {
-            min_r = min(min_t, min_r); // 如果当前稳定群有效，更新最小 r 值
+            min_r = min(min_t, min_r); 
         }
         else {
-            // 如果当前稳定群无效，回滚 max_r 数组的值和节点 r 值和 alpha 值
             for (int j = i + 1; j < max_r.size(); j++) {
                 max_r[j] = max_tmp[j - i - 1];
             }
@@ -826,7 +750,7 @@ void Graph::check_sg_h_clique() {
             while (!q.empty()) {
                 auto tp = q.front();
                 q.pop();
-                cpt[get<0>(tp)] = min(cpt[get<0>(tp)], get<1>(tp)); //这一行的目的是什么
+                cpt[get<0>(tp)] = min(cpt[get<0>(tp)], get<1>(tp)); 
 
                 int hc = slt_h_cliques[get<1>(tp)];
 
@@ -854,63 +778,55 @@ void Graph::check_sg_h_clique() {
             }
         }
 
-        clock_t cur_t = clock(); // 记录当前处理完成的时间
+        clock_t cur_t = clock(); 
     }
 
 
-    // 更新 check_first 变量以表示是否为第一个稳定群或第一个稳定群是否有效
     check_first = (nsg == 1) || valid[0];
 
-    // 如果存在多个稳定群，合并它们
     if (nsg > 1) {
         vector<int> n_nag;
         for (int i = 0; i < nsg; i++) {
-            // 检查是否当前稳定群是第一个稳定群（索引为0），或者前一个稳定群有效
+
             if (i == 0 || valid[i - 1]) {
-                // 如果是第一个稳定群或前一个稳定群有效，则创建一个新的稳定群
-                // 并将当前稳定群的节点数量添加到新的稳定群中
+
                 n_nag.push_back(nag[i]);
             }
             else {
-                // 如果不是第一个稳定群且前一个稳定群无效，则将当前稳定群与前一个稳定群合并
-                // 将当前稳定群的节点数量添加到前一个稳定群的节点数量中
+             
                 n_nag[n_nag.size() - 1] += nag[i];
             }
 
         }
-        nag = n_nag; // 更新 nag 数组以反映合并后的稳定群
+        nag = n_nag; 
 
-        cur = 0; // 初始化稳定群节点索引为0
-        nsg = nag.size(); // 更新稳定群的数量
-        double minr = m; // 初始化最小 r 值为 m（一个较大的值，作为初始值）
+        cur = 0; 
+        nsg = nag.size(); 
+        double minr = m;
 
-        // 迭代处理每个稳定群
 
         for (int i = 0; i < nsg; i++) {
-            double tmp_r = m; // 初始化当前稳定群的最小 r 值为 m
-            // 更新当前稳定群中节点的 sg（稳定群索引），并计算最小 r 值
+            double tmp_r = m; 
+
 #pragma omp parallel for 
             for (int j = cur; j < cur + nag[i]; j++) {
-                /* int threadId = omp_get_thread_num();
-                 printf("Thread %d is processing j=%d\n", threadId, j);*/
-                sg[slt_nodes[j]] = i; // 更新节点的稳定群索引
-                tmp_r = min(tmp_r, r[slt_nodes[j]]); // 计算当前稳定群的最小 r 值
-                minr = min(minr, r[slt_nodes[j]]); // 更新整体最小 r 值
+               
+                sg[slt_nodes[j]] = i; 
+                tmp_r = min(tmp_r, r[slt_nodes[j]]); 
+                minr = min(minr, r[slt_nodes[j]]); 
             }
-            cur += nag[i]; // 更新节点索引，准备处理下一个稳定群
+            cur += nag[i]; 
         }
     }
 
 
-    // 输出更新后的稳定群数量
     printf("updated nsg %d\n", nsg);
 }
 
 void Graph::check_sg() {
-    // 如果只有一个或没有稳定群，无需处理，直接返回
+
     if (nsg <= 1) return;
 
-    // 对 slt_edges 中的边按照一定规则排序，确保后续处理的顺序
     sort(slt_edges.begin(), slt_edges.end(), [this](int a, int b)->bool {
         int a1 = min(sg[edges[a].first], sg[edges[a].second]);
         int a2 = max(sg[edges[a].first], sg[edges[a].second]);
@@ -922,24 +838,19 @@ void Graph::check_sg() {
             return a2 < b2;
         });
 
-    // 创建用于存储每个稳定群是否有效的数组
+
     vector<bool> valid(nsg);
 
-    // 创建用于计算每个稳定群中边的数量的数组
+
     vector<int> bin(nsg + 1, 0);
 
-    // 计算每个稳定群中的边数，并将结果存储在 bin 数组中
+
     for (int i = 0; i < slt_edges.size(); i++) {
-        // 首先计算当前边 slt_edges[i] 所连接的两个节点的稳定群中较小的一个，
-        // 并将结果存储在变量 a 中。
-        // 这是为了确保边被计数到稳定群的最小节点中
+
         int a = min(sg[edges[slt_edges[i]].first], sg[edges[slt_edges[i]].second]);
         ++bin[a];
     }
 
-
-    // 代码计算了一个累积的数组 bin，
-    // 使得对每个稳定群的累积边数可以以常量时间复杂度访问
     int s = 0;
     for (int i = 0; i <= nsg; i++) {
         int tmp = s;
@@ -947,45 +858,44 @@ void Graph::check_sg() {
         bin[i] = tmp;
     }
 
-    // 创建用于存储每个稳定群中节点的最大 r 值的数组
+
     vector<double> max_r(nsg);
 
     int cur = 0;
     for (int i = 0; i < nsg; i++) {
-        // 初始化每个稳定群的最大 r 值
+
         max_r[i] = r[slt_nodes[cur]];
 
-        // 计算每个稳定群中节点的最大 r 值
+
         for (int j = cur + 1; j < cur + nag[i]; j++) {
             max_r[i] = max(max_r[i], r[slt_nodes[j]]);
         }
         cur += nag[i];
     }
 
-    // 初始化整个图中节点的最小 r 值
-    double min_r = r[slt_nodes[0]]; // 初始化最小 r 值为第一个稳定群中节点的 r 值
-    cur = 0; // 初始化稳定群中节点索引为0
-    vector<int> cpt(bin); // 创建 bin 数组的副本，用于回滚操作
-    clock_t start = clock(); // 记录处理开始的时间
 
-    for (int i = 0; i < nsg - 1; i++) { // 迭代处理从第一个稳定群到倒数第二个稳定群的情况
-        for (int j = cur; j < cur + nag[i]; j++) { // 计算当前稳定群 i 中节点的最小 r 值
-            min_r = min(min_r, r[slt_nodes[j]]);
+    double min_r = r[slt_nodes[0]]; 
+    cur = 0; 
+    vector<int> cpt(bin); 
+    clock_t start = clock(); 
+
+    for (int i = 0; i < nsg - 1; i++) { 
+        for (int j = cur; j < cur + nag[i]; j++) { 
         }
-        double min_t = min_r; // 初始化当前最小 r 值为 min_r
+        double min_t = min_r; 
 
-        vector<double> max_tmp(max_r.begin() + i + 1, max_r.end()); // 创建最大 r 值数组 max_tmp
-        double max_t = *max_element(std::begin(max_tmp), std::end(max_tmp)); // 计算最大 r 值 max_t
+        vector<double> max_tmp(max_r.begin() + i + 1, max_r.end()); 
+        double max_t = *max_element(std::begin(max_tmp), std::end(max_tmp)); 
 
-        queue<std::tuple<int, int, double>> q; // 创建队列 q 用于回滚操作
-        valid[i] = true; // 假设当前稳定群有效
+        queue<std::tuple<int, int, double>> q; 
+        valid[i] = true; 
 
-        for (int j = 0; j <= i; j++) { // 迭代处理从第一个稳定群到当前稳定群 i 的情况
-            while (cpt[j] < bin[j + 1]) { // 遍历当前稳定群范围内未处理的边
-                int e = slt_edges[cpt[j]]; // 获取当前未处理的边 e
+        for (int j = 0; j <= i; j++) { 
+            while (cpt[j] < bin[j + 1]) { 
+                int e = slt_edges[cpt[j]]; 
 
-                if (max(sg[edges[e].first], sg[edges[e].second]) > i) { // 检查边是否跨越当前稳定群
-                    q.push(make_tuple(j, cpt[j], alpha[e])); // 存储需要回滚的边和相关信息
+                if (max(sg[edges[e].first], sg[edges[e].second]) > i) { 
+                    q.push(make_tuple(j, cpt[j], alpha[e]));
 
                     int u = edges[e].first;
                     int v = edges[e].second;
@@ -1008,22 +918,22 @@ void Graph::check_sg() {
                     }
 
                     if (min_t <= max_t) {
-                        valid[i] = false; // 如果条件不满足，标记当前稳定群为无效
+                        valid[i] = false; 
                         break;
                     }
                 }
 
-                ++cpt[j]; // 增加当前稳定群中边的计数器
+                ++cpt[j]; 
             }
 
-            if (!valid[i]) break; // 如果当前稳定群无效，终止内部循环
+            if (!valid[i]) break; 
         }
 
         if (valid[i]) {
-            min_r = min(min_t, min_r); // 如果当前稳定群有效，更新最小 r 值
+            min_r = min(min_t, min_r);
         }
         else {
-            // 如果当前稳定群无效，回滚 max_r 数组的值和节点 r 值和 alpha 值
+            
             for (int j = i + 1; j < max_r.size(); j++) {
                 max_r[j] = max_tmp[j - i - 1];
             }
@@ -1040,353 +950,56 @@ void Graph::check_sg() {
             }
         }
 
-        clock_t cur_t = clock(); // 记录当前处理完成的时间
+        clock_t cur_t = clock();
     }
 
 
-    // 更新 check_first 变量以表示是否为第一个稳定群或第一个稳定群是否有效
+    
     check_first = (nsg == 1) || valid[0];
 
-    // 如果存在多个稳定群，合并它们
+
     if (nsg > 1) {
         vector<int> n_nag;
         for (int i = 0; i < nsg; i++) {
-            // 检查是否当前稳定群是第一个稳定群（索引为0），或者前一个稳定群有效
+          
             if (i == 0 || valid[i - 1]) {
-                // 如果是第一个稳定群或前一个稳定群有效，则创建一个新的稳定群
-                // 并将当前稳定群的节点数量添加到新的稳定群中
+
                 n_nag.push_back(nag[i]);
             }
             else {
-                // 如果不是第一个稳定群且前一个稳定群无效，则将当前稳定群与前一个稳定群合并
-                // 将当前稳定群的节点数量添加到前一个稳定群的节点数量中
+               
                 n_nag[n_nag.size() - 1] += nag[i];
             }
 
         }
-        nag = n_nag; // 更新 nag 数组以反映合并后的稳定群
+        nag = n_nag; 
 
-        cur = 0; // 初始化稳定群节点索引为0
-        nsg = nag.size(); // 更新稳定群的数量
-        double minr = m; // 初始化最小 r 值为 m（一个较大的值，作为初始值）
+        cur = 0; 
+        nsg = nag.size(); 
+        double minr = m; 
 
-        // 迭代处理每个稳定群
+    
         for (int i = 0; i < nsg; i++) {
-            double tmp_r = m; // 初始化当前稳定群的最小 r 值为 m
+            double tmp_r = m; 
 
-            // 更新当前稳定群中节点的 sg（稳定群索引），并计算最小 r 值
+      
             for (int j = cur; j < cur + nag[i]; j++) {
-                sg[slt_nodes[j]] = i; // 更新节点的稳定群索引
-                tmp_r = min(tmp_r, r[slt_nodes[j]]); // 计算当前稳定群的最小 r 值
-                minr = min(minr, r[slt_nodes[j]]); // 更新整体最小 r 值
+                sg[slt_nodes[j]] = i; 
+                tmp_r = min(tmp_r, r[slt_nodes[j]]); 
+                minr = min(minr, r[slt_nodes[j]]); 
             }
-            cur += nag[i]; // 更新节点索引，准备处理下一个稳定群
+            cur += nag[i]; 
         }
     }
 
 
-    // 输出更新后的稳定群数量
     printf("updated nsg %d\n", nsg);
 }
 
 
-//void Graph::check_sg() {
-//    vector<bool> valid(nsg);
-//    queue<pair<int, double>> q;
-//    int cur = 0;
-//    for (int i = 0; i < nsg - 1; i++){
-//        cur += nag[i];
-//        for (auto e : slt_edges) {
-//            int u = edges[e].first, v = edges[e].second;
-//            if (min(sg[u], sg[v]) <= i && max(sg[u], sg[v]) > i) {
-//                q.push(make_pair(e, alpha[e]));
-//                if (sg[u] > sg[v]) {
-//                    r[u] += 1 - alpha[e];
-//                    r[v] -= 1 - alpha[e];
-//                    alpha[e] = 1;
-//                } else if (sg[u] < sg[v]) {
-//                    r[u] -= alpha[e];
-//                    r[v] += alpha[e];
-//                    alpha[e] = 0;
-//                }
-//            }
-//        }
-//        double min_r = r[slt_nodes[0]];
-//        for (int j = 0; j < cur; j++) {
-//            min_r = min(min_r, r[slt_nodes[j]]);
-//        }
-//        double max_r = r[slt_nodes[cur]];
-//        for (int j = cur; j < slt_nodes.size(); j++) {
-//            max_r = max(max_r, r[slt_nodes[j]]);
-//        }
-//        printf("%d %.4f %.4f\n", i, min_r, max_r);
-//        if (min_r > max_r) {
-//            valid[i] = true;
-//        } else {
-//            valid[i] = false;
-//            while (!q.empty()) {
-//                auto tmp = q.front(); q.pop();
-//                int u = edges[tmp.first].first, v = edges[tmp.first].second;
-//                r[u] += tmp.second - alpha[tmp.first];
-//                r[v] -= tmp.second - alpha[tmp.first];
-//                alpha[tmp.first] = tmp.second;
-//            }
-//        }
-//    }
-//
-//    check_first = (nsg == 1) || valid[0];
-//    //merge stable groups
-//    if (nsg > 1) {
-//        vector<int> n_nag;
-//        for (int i = 0; i < nsg; i++) {
-//            if (i == 0 || valid[i - 1]) {
-//                n_nag.push_back(nag[i]);
-//            } else {
-//                n_nag[n_nag.size() - 1] += nag[i];
-//            }
-//        }
-//        nag = n_nag;
-//
-//        cur = 0;
-//        nsg = nag.size();
-//        double minr = m;
-//        for (int i = 0; i < nsg; i++) {
-//            printf("nsg %d %d ", i, nag[i]);
-//            double tmp_r = m;
-//            for (int j = cur; j < cur + nag[i]; j++) {
-//                sg[slt_nodes[j]] = i;
-//                tmp_r = min(tmp_r, r[slt_nodes[j]]);
-//                minr = min(minr, r[slt_nodes[j]]);
-//            }
-//            printf("%.4f %.4f\n", minr, tmp_r);
-//            cur += nag[i];
-//        }
-//    }
-//    printf("updated nsg %d\n", nsg);
-//
-//}
 
-//void Graph::check_sg() {
-//    sort(slt_edges.begin(), slt_edges.end(), [this](int a, int b)->bool {
-//        int a1 = min(sg[edges[a].first], sg[edges[a].second]);
-//        int a2 = max(sg[edges[a].first], sg[edges[a].second]);
-//        int b1 = min(sg[edges[b].first], sg[edges[b].second]);
-//        int b2 = max(sg[edges[b].first], sg[edges[b].second]);
-//        if (a1 != b1)
-//            return a1 < b1;
-//        else
-//            return a2 < b2;
-//    });
-//
-//    vector<vector<int>::iterator> its;
-//    auto it = slt_edges.begin();
-//
-//    vector<double> max_r(nsg);
-//    int cur = 0;
-//    for (int i = 0; i < nsg; i++) {
-//        its.push_back(it);
-//        while (it != slt_edges.end() && min(sg[edges[*it].first], sg[edges[*it].second]) <= i) it++;
-//
-//        max_r[i] = r[slt_nodes[cur]];
-//        double tmp_min = r[slt_nodes[cur]];
-//        for (int j = cur + 1; j < cur + nag[i]; j++) {
-//            max_r[i] = max(max_r[i], r[slt_nodes[j]]);
-//            tmp_min = min(tmp_min, r[slt_nodes[j]]);
-//        }
-////        printf("%d %d %.4f %.4f\n", i, cur, max_r[i], tmp_min);
-//        cur += nag[i];
-//    }
-//
-//    vector<bool> valid(nsg);
-//
-//    double min_r = r[slt_nodes[0]];
-//    cur = 0;
-//
-//    for (int i = 0; i < nsg - 1; i++) {
-////        printf("i %d\n", i);
-//        printf("%d %d %.4f %.4f\n", i, cur, min_r, max_r[i + 1]);
-//        for (int j = cur; j < cur + nag[i]; j++) {
-//            min_r = min(min_r, r[slt_nodes[j]]);
-//        }
-//        printf("%d %d %.4f %.4f\n", i, cur, min_r, max_r[i + 1]);
-//        cur += nag[i];
-//        vector<double> tmp_max_r(max_r.begin() + i + 1, max_r.end());
-//        double mmax = *max_element(begin(tmp_max_r), end(tmp_max_r));
-//        double mmin = min_r;
-//        stack<int> s_alpha;
-//        stack<int> s_pos;
-//        valid[i] = true;
-//        for (int j = 0; j <= i; j++) {
-//            while (its[j] != slt_edges.end() && min(sg[edges[*its[j]].first], sg[edges[*its[j]].second]) <= j) {
-//                if (max(sg[edges[*its[j]].first], sg[edges[*its[j]].second]) > i) {
-//                    s_alpha.push(alpha[*its[j]]);
-//                    s_pos.push(j);
-//                    int u = edges[*its[j]].first, v = edges[*its[j]].second;
-//                    if (sg[u] > sg[v]) {
-//                        r[u] += 1 - alpha[*its[j]];
-//                        max_r[sg[u]] = max(max_r[sg[u]], r[u]);
-//                        mmax = max(mmax, r[u]);
-//                        r[v] -= 1 - alpha[*its[j]];
-//                        mmin = min(mmin, r[v]);
-//                        alpha[*its[j]] = 1;
-//                    } else if (sg[u] < sg[v]) {
-//                        r[u] -= alpha[*its[j]];
-//                        mmin = min(mmin, r[u]);
-//                        r[v] += alpha[*its[j]];
-//                        max_r[sg[v]] = max(max_r[sg[v]], r[v]);
-//                        mmax = max(mmax, r[v]);
-//                        alpha[*its[j]] = 0;
-//                    }
-//
-//                }
-//                its[j]++;
-//                if (mmin <= mmax) {
-//                    valid[i] = false;
-//                    break;
-//                }
-//            }
-//            if (!valid[i]) break;
-//        }
-//        printf("%d ", i);
-//        printf(valid[i] ? "true\n" : "false\n");
-//        if (valid[i]) {
-//            min_r = min(min_r, mmin);
-//        } else {
-//            for (int j = i + 1; j < max_r.size(); j++) {
-//                max_r[j] = tmp_max_r[j - i - 1];
-//            }
-//            while (!s_alpha.empty()) {
-//                double val = s_alpha.top(); s_alpha.pop();
-//                auto j = s_pos.top(); s_pos.pop();
-//                its[j]--;
-//                int u = edges[*its[j]].first, v = edges[*its[j]].second;
-//                r[u] += val - alpha[*its[j]];
-//                r[v] -= val - alpha[*its[j]];
-//                alpha[*its[j]] = val;
-//            }
-//        }
-//        printf("%d %.4f %.4f %.4f %.4f\n", i, min_r, mmin, mmax, max_r[i + 1]);
-//    }
-//
-//    check_first = (nsg == 1) || valid[0];
-//    //merge stable groups
-//    if (nsg > 1) {
-//        vector<int> n_nag;
-//        for (int i = 0; i < nsg; i++) {
-//            if (i == 0 || valid[i - 1]) {
-//                n_nag.push_back(nag[i]);
-//            } else {
-//                n_nag[n_nag.size() - 1] += nag[i];
-//            }
-//        }
-//        nag = n_nag;
-//
-//        cur = 0;
-//        nsg = nag.size();
-//        double minr = m;
-//        for (int i = 0; i < nsg; i++) {
-//            printf("nsg %d %d ", i, nag[i]);
-//            double tmp_r = m;
-//            for (int j = cur; j < cur + nag[i]; j++) {
-//                sg[slt_nodes[j]] = i;
-//                tmp_r = min(tmp_r, r[slt_nodes[j]]);
-//                minr = min(minr, r[slt_nodes[j]]);
-//            }
-//            printf("%.4f %.4f\n", minr, tmp_r);
-//            cur += nag[i];
-//        }
-//    }
-//    printf("updated nsg %d\n", nsg);
-//}
 
-//void Graph::check_sg() {
-//    vector<double> min_r(nsg);
-//    vector<double> max_r(nsg);
-//    int cur = 0;
-////    for (int i = 0; i < nsg; i++) {
-////        min_r[i] = r[slt_nodes[cur]];
-////        max_r[i] = r[slt_nodes[cur]];
-////        for (int j = cur + 1; j < cur + nag[i]; j++) {
-////            min_r[i] = min(min_r[i], r[slt_nodes[j]]);
-////            max_r[i] = max(max_r[i], r[slt_nodes[j]]);
-////        }
-////        cur += nag[i];
-////        printf("i %d min %.4f max %.4f\n", i, min_r[i], max_r[i]);
-////        if (i > 0) min_r[i] = min(min_r[i], min_r[i - 1]);
-////    }
-//
-//    for (auto e : slt_edges) {
-//        int u = edges[e].first;
-//        int v = edges[e].second;
-//        if (sg[u] > sg[v]) {
-//            r[u] += 1 - alpha[e];
-//            r[v] -= 1 - alpha[e];
-//            alpha[e] = 1;
-//        } else if (sg[u] < sg[v]) {
-//            r[u] -= alpha[e];
-//            r[v] += alpha[e];
-//            alpha[e] = 0;
-//        }
-//    }
-//
-////    vector<double> min_r(nsg);
-////    vector<double> max_r(nsg);
-//    cur = 0;
-//    for (int i = 0; i < nsg; i++) {
-//        min_r[i] = r[slt_nodes[cur]];
-//        max_r[i] = r[slt_nodes[cur]];
-//        for (int j = cur + 1; j < cur + nag[i]; j++) {
-//            min_r[i] = min(min_r[i], r[slt_nodes[j]]);
-//            max_r[i] = max(max_r[i], r[slt_nodes[j]]);
-//        }
-//        cur += nag[i];
-//        printf("i %d min %.4f max %.4f\n", i, min_r[i], max_r[i]);
-//        if (i > 0) min_r[i] = min(min_r[i], min_r[i - 1]);
-//    }
-////    for (int i = 0; i < n; i++) {
-////        printf("%.4f ", r[i]);
-////    }
-////    printf("\n");
-//
-//    for (int i = nsg - 2; i >= 0; i--) {
-//        max_r[i] = max(max_r[i], max_r[i + 1]);
-//    }
-//
-//    for (int i = 0; i < nsg; i++) {
-//        printf("min %.4f max %.4f\n", min_r[i], max_r[i]);
-//    }
-//
-//    vector<bool> valid(nsg);
-//    for (int i = 0; i < nsg - 1; i++) {
-//        valid[i] = min_r[i] > max_r[i + 1];
-//    }
-//    check_first = (nsg == 1) || valid[0];
-//
-//    //merge stable groups
-//    if (nsg > 1) {
-//        vector<int> n_nag;
-//        for (int i = 0; i < nsg; i++) {
-//            if (i == 0 || valid[i - 1]) {
-//                n_nag.push_back(nag[i]);
-//            } else {
-//                n_nag[n_nag.size() - 1] += nag[i];
-//            }
-//        }
-//        nag = n_nag;
-//
-//        cur = 0;
-//        nsg = nag.size();
-//        for (int i = 0; i < nsg; i++) {
-//            for (int j = cur; j < cur + nag[i]; j++) {
-//                sg[slt_nodes[j]] = i;
-//            }
-//            cur += nag[i];
-//        }
-//    }
-//    printf("updated nsg %d\n", nsg);
-//}
-
-void Graph::pruning() {  //剪枝的算法
+void Graph::pruning() {  
     vector<double> min_r(nsg);
     vector<double> max_r(nsg);
 
@@ -1419,7 +1032,6 @@ void Graph::pruning() {  //剪枝的算法
     }
 
 
-    // 这一段应该怎么改？
     for (auto e : slt_edges) {
         int u = edges[e].first;
         int v = edges[e].second;
@@ -1448,16 +1060,6 @@ void Graph::pruning() {  //剪枝的算法
         }
     }
 
-
-    // 计算core改为计算h-clique core
-   /* for (auto e : slt_edges) {
-        int u = edges[e].first;
-        int v = edges[e].second;
-        if (selected[u] && selected[v]) {
-            ++deg[u];
-            ++deg[v];
-        }
-    }*/
 
     for (auto& hc : slt_h_cliques) {
         int flag = 1;
@@ -1491,8 +1093,7 @@ void Graph::pruning() {  //剪枝的算法
         int u = q.front(); q.pop();
         for (int i = 0; i < v2cliques[u].size(); i++) {
             if (slt_h_cliques_map.find(v2cliques[u][i]) == slt_h_cliques_map.end()) continue;
-            //if (find(slt_h_cliques.begin(), slt_h_cliques.end(), v2cliques[u][i]) == slt_h_cliques.end()) continue; // TODO
-            //if (slt_h_cliques[v2cliques[u][i]] == 0) continue;
+        
             vector<int> hc = h_cliques[v2cliques[u][i]];
             for (int j = 0; j < hc.size(); j++) {
                 int v = hc[j];
@@ -1531,19 +1132,12 @@ void Graph::pruning() {  //剪枝的算法
         }
     }
 
-    /* for (auto i : slt_nodes) {
-         cout << sg[i] << endl;
-     }*/
+
     slt_edges = tmp_edges;
     sort(slt_edges.begin(), slt_edges.end(), [this](int a, int b)->bool {
         return sg[edges[a].first] < sg[edges[b].first];
         });
 
-    /* int j = 0;
-       for (auto i : slt_edges) {
-         cout << j << ": " << sg[edges[i].first] << endl;
-         j++;
-     }*/
 
     vector<int> tmp_h_cliques;
     for (auto hc : slt_h_cliques) {
@@ -1579,7 +1173,6 @@ void Graph::pruning() {  //剪枝的算法
         stk_nodes.push(t_nodes);
         slt_nodes.resize(n_nodes);
 
-        // 重要的终止条件
 
         if (sg[t_nodes[0]] > sg[edges[slt_edges.back()].first]) {
             stk_nodes.pop();
