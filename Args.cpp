@@ -26,7 +26,7 @@ void Args::parse_args(int argc, char **argv) {
         switch (c) {
             case 'g': {
                 printf("%s\n", optarg);
-                address = _strdup(optarg);
+                address = strdup(optarg);
                 break;
             }
 

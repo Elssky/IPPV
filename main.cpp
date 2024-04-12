@@ -1,8 +1,6 @@
 #include <iostream>
 #include "Args.h"
 #include "Graph.h"
-#include <omp.h>
-
 
 int main(int argc, char* argv[]) {
     EdgeList* el;
@@ -11,7 +9,6 @@ int main(int argc, char* argv[]) {
     Args* args = new Args();
     args->parse_args(argc, argv);
     FILE* d_file = fopen(args->address, "r");
-    omp_set_num_threads(4);
 
     printf("Reading edgelist from file %s\n", args->address);
 
