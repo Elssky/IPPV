@@ -58,5 +58,5 @@ if (p == 0)
 Cite as:
 
 `
-Xu X, Liu H, Lv X, et al. An Efficient and Exact Algorithm for Locally h-Clique Densest Subgraph Discovery[J]. arXiv preprint arXiv:2408.14022, 2024.
+Xiaojia Xu, Haoyu Liu, Xiaowei Lv, Yongcai Wang, and Deying Li. 2024. An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery. Proc. ACM Manag. Data 2, N6 (SIGMOD), Article 225 (December 2024), 26 pages. https://doi.org/10.1145/3698800
 `
