@@ -1,5 +1,5 @@
-# "An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery"
-
+# "An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery [SIGMOD 2025]"
+Detecting locally, non-overlapping, near-clique densest subgraphs is a crucial problem for community search in social networks. As a vertex may be involved in multiple overlapped local cliques, detecting locally densest sub-structures considering h-clique density, i.e., locally h-clique densest subgraph (LhCDS) attracts great interests. This paper investigates the LhCDS detection problem and proposes an efficient and exact algorithm to list the top-k non-overlapping, locally h-clique dense, and compact subgraphs. We in particular jointly consider h-clique compact number and LhCDS and design a new "Iterative Propose-Prune-and-Verify" pipeline (IPPV) for top-k LhCDS detection. (1) In the proposal part, we derive initial bounds for h-clique compact numbers; prove the validity, and extend a convex programming method to tighten the bounds for proposing LhCDS candidates without missing any. (2) Then a tentative graph decomposition method is proposed to solve the challenging case where a clique spans multiple subgraphs in graph decomposition. (3) To deal with the verification difficulty, both a basic and a fast verification method are proposed, where the fast method constructs a smaller-scale flow network to improve efficiency while preserving the verification correctness. The verified LhCDSes are returned, while the candidates that remained unsure reenter the IPPV pipeline. (4) We further extend the proposed methods to locally more general pattern densest subgraph detection problems. We prove the exactness and low complexity of the proposed algorithm. Extensive experiments on real datasets show the effectiveness and high efficiency of IPPV.
 ## Usage
 `mkdir output` 
 
@@ -52,3 +52,9 @@ if (p == 0)
         h_cliques_no.push_back(i);
     }
 ```
+
+Cite as:
+
+`
+Xu X, Liu H, Lv X, et al. An Efficient and Exact Algorithm for Locally h-Clique Densest Subgraph Discovery[J]. arXiv preprint arXiv:2408.14022, 2024.
+`
