@@ -190,14 +190,6 @@ bool Graph::isValidAddition(const vector<int>& currentClique, int newNode) {
     return true;
 }
 
-
-//void Graph::clique_enum()
-//{
-//    for (int i = 0; i < edges.size(); ++i) {
-//
-//    }
-//}
-
 void Graph::frank_wolfe() {
     printf("#node %lld #edge %lld\n", slt_nodes.size(), slt_edges.size());
     if (CT == 0) {
@@ -230,18 +222,7 @@ void Graph::frank_wolfe() {
                 alpha[e] = alpha[e] * (1 - gamma_t);
             }
         }
-        //        for (auto & node : slt_nodes) {
-        //            r[node] = 0;
-        //        }
-        //        for (auto & e : slt_edges) {
-        //            r[edges[e].first] += alpha[e];
-        //            r[edges[e].second] += 1 - alpha[e];
-        //        }
     }
-    //    for (int i = 0; i < n; i++) {
-    //        printf("%.4f ", r[i]);
-    //    }
-    //    printf("\n");
 }
 
 void Graph::frank_wolfe_h_clique() {
@@ -265,7 +246,6 @@ void Graph::frank_wolfe_h_clique() {
         }
     }
 
-    //for (int t = CT + 1; t <= CT + NT; t++) {
     for (int t = CT + 1; t <= CT + NT; t++) {
         double gamma_t = 2.0 / double(t + 2);
         for (auto& hc : slt_h_cliques) {
@@ -276,7 +256,6 @@ void Graph::frank_wolfe_h_clique() {
         for (auto& node : slt_nodes) {
             r[node] *= 1 - gamma_t;
         }
-        //#pragma omp parallel for
         for (int i = 0; i < slt_h_cliques.size(); i++) {
             int hc = slt_h_cliques[i];
             int node_index = h_cliques[hc][0];
@@ -285,18 +264,10 @@ void Graph::frank_wolfe_h_clique() {
                     node_index = hc_node;
                 }
             }
-            //#pragma omp atomic
             r[node_index] += gamma_t;
-            //#pragma omp atomic
             alpha_c[hc][node_index] += gamma_t;
         }
     }
-
-    /*for (auto& node : slt_nodes) {
-        printf("rho[%d]: %f\n", node, r[node]);
-    }*/
-
-
 }
 
 void Graph::frank_wolfe_h_clique_new() {
@@ -320,7 +291,6 @@ void Graph::frank_wolfe_h_clique_new() {
         }
     }
 
-    //for (int t = CT + 1; t <= CT + NT; t++) {
     for (int t = CT + 1; t <= CT + NT; t++) {
         double gamma_t = 2.0 / double(t + 2);
         for (auto& hc : slt_h_cliques) {
@@ -331,7 +301,6 @@ void Graph::frank_wolfe_h_clique_new() {
         for (auto& node : slt_nodes) {
             r[node] *= 1 - gamma_t;
         }
-        //#pragma omp parallel for
         for (int i = 0; i < slt_h_cliques.size(); i++) {
             int hc = slt_h_cliques[i];
             int node_index = h_cliques[hc][0];
@@ -346,22 +315,13 @@ void Graph::frank_wolfe_h_clique_new() {
                     sub_node_index = hc_node;
                 }
             }
-            //#pragma omp atomic
             r[node_index] = r[node_index] + (h - 1.0)/(1.0 * h) * gamma_t;
-            //#pragma omp atomic
             alpha_c[hc][node_index] = alpha_c[hc][node_index] + (h - 1.0) / (1.0 * h) *  gamma_t;
 
             r[sub_node_index] = r[sub_node_index] + 1.0 / (1.0 * h) * gamma_t;
-            //#pragma omp atomic
             alpha_c[hc][sub_node_index] = alpha_c[hc][sub_node_index] + 1.0 / (1.0 * h) * gamma_t;
         }
     }
-
-    /*for (auto& node : slt_nodes) {
-        printf("rho[%d]: %f\n", node, r[node]);
-    }*/
-
-
 }
 
 void Graph::LODA_hclique() {
@@ -429,10 +389,6 @@ void Graph::LODA_hclique() {
                     if (sumD == 0)break;
                 }
             }
-            /*if (sumD > 0)
-            {
-                cout << sumD << endl;
-            }*/
         }
     }
 }
@@ -484,9 +440,6 @@ void Graph::new_LODA()
     }
 }
 
-/* Pool Adjacent Violators Algorithm. Try to decompose the graph into Stable Groups.
- * deg reused here!
- */
 void Graph::pava() {
    
     sort(slt_nodes.begin(), slt_nodes.end(), [this](int a, int b)->bool {
@@ -630,7 +583,6 @@ void Graph::check_sg_h_clique() {
   
     if (nsg <= 1) return;
 
-  
     for (auto hc : slt_h_cliques) {
         sort(h_cliques[hc].begin(), h_cliques[hc].end(), [this](int x, int y)->bool {
             return sg[x] < sg[y];
@@ -645,18 +597,14 @@ void Graph::check_sg_h_clique() {
         }
         return false;
     });
-
    
     vector<bool> valid(nsg);
-
-
     vector<int> bin(nsg + 1, 0);
 
     for (auto& hc : slt_h_cliques) {  
         int a = sg[h_cliques[hc][0]];
         ++bin[a];
     }
-
 
     int s = 0;
     for (int i = 0; i <= nsg; i++) {
@@ -676,7 +624,6 @@ void Graph::check_sg_h_clique() {
         }
         cur += nag[i];
     }
-
 
     double min_r = r[slt_nodes[0]]; 
     cur = 0;
@@ -807,8 +754,6 @@ void Graph::check_sg_h_clique() {
 
         for (int i = 0; i < nsg; i++) {
             double tmp_r = m; 
-
-#pragma omp parallel for 
             for (int j = cur; j < cur + nag[i]; j++) {
                
                 sg[slt_nodes[j]] = i; 
@@ -1011,7 +956,6 @@ void Graph::pruning() {
             min_r[i] = min(min_r[i], r[slt_nodes[j]]);
             max_r[i] = max(max_r[i], r[slt_nodes[j]]);
         }
-#pragma omp parallel for 
         for (int j = cur; j < cur + nag[i]; j++) {
             /* int threadId = omp_get_thread_num();
              printf("Thread %d is processing j=%d\n", threadId, j);*/
@@ -1043,23 +987,17 @@ void Graph::pruning() {
         }
     }
 
-#pragma omp parallel 
-    {
-        int u;
-#pragma omp for
-        for (int i = 0; i < slt_nodes.size(); i++) {
-            u = slt_nodes[i];
-            if (selected[u]) {
-                for (auto v : adj[u]) {
-                    if (rho_l[v] > rho_u[u] + DELTA) {
-#pragma omp critical
-                        selected[u] = false;
-                    }
+    int u;
+    for (int i = 0; i < slt_nodes.size(); i++) {
+        u = slt_nodes[i];
+        if (selected[u]) {
+            for (auto v : adj[u]) {
+                if (rho_l[v] > rho_u[u] + DELTA) {
+                    selected[u] = false;
                 }
             }
         }
     }
-
 
     for (auto& hc : slt_h_cliques) {
         int flag = 1;
@@ -1212,7 +1150,6 @@ void Graph::pruning() {
 }
 
 bool Graph::Get_Maxflow() {
-    // IsDensestMF algorithm (From Sun kClist++)
     Network network;
     vector<int> id_in_network(n, -1);
     vector<int> idx_in_slt_nodes(slt_nodes.size(), 0);
@@ -1339,7 +1276,6 @@ void Graph::findLhCDS() {
                     printf("lhcdses candidate: #nodes %lu #edges %d #h-cliques %d\n", tmp_nodes.size(), std::get<1>(pr) - cur_e, std::get<2>(pr) - cur_hc);
                     double g = (double)(std::get<2>(pr) - cur_hc) / tmp_nodes.size();
 
-                    //if (lhcdses.size() == 0 || verify_LhCDS(tmp_nodes, nodes, g)) {     //verify_LhCDSAlgorithm. 
                     if (lhcdses.size() == 0 || verify_LhCDS_small(tmp_nodes, g, tmp_cliques)) {
                         lhcdses.push_back(tmp_nodes);
                         lhcds_rho.push_back(g);
@@ -1607,7 +1543,7 @@ bool Graph::verify_LhCDS(vector<int>temp_nodes, vector<int>& nodes, double g) {
             if (u == 1144 && w == 2693) {
                 cout << "here" << endl;
             }
-            if (mp.find(w) == mp.end() && id_in_network[w] != -1 && S.find(R[id_in_network[w]]) != S.end()) //w 不属于nodes，但是属于S
+            if (mp.find(w) == mp.end() && id_in_network[w] != -1 && S.find(R[id_in_network[w]]) != S.end()) //w 虏禄脢么脫脷nodes拢卢碌芦脢脟脢么脫脷S
             {
 
                 //cout << u << " "<< w;
