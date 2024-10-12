@@ -7,6 +7,8 @@ Detecting locally, non-overlapping, near-clique densest subgraphs is a crucial p
 
 `./LhCDScvx --args -g ./dataset/CA-CondMat.txt -h 3 -t 10 -k 20 -p 0` 
 
+`h` means h-clique, `t` is iteration, `k` means top-k LhCDSm `p` is pattern.
+
 The input data format is: Fisrt row is `nodes_num, edges_num`, then each following row represents an edge. Node is should start from 0, e.g.
 ```csv
 23133 93439
