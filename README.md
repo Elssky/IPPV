@@ -26,7 +26,8 @@ Figure 1 shows the relationships between a subset of characters in “Harry Pott
 
 `h` means h-clique, `t` is iteration, `k` means top-k LhCDSm `p` is pattern.
 
-The input data format is: Fisrt row is `nodes_num, edges_num`, then each following row represents an edge. Node is should start from 0, e.g.
+The input data format is: 
+Fisrt row is `nodes_num, edges_num`, then each following row represents an edge. Node is should start from 0, e.g.
 ```csv
 23133 93439
 0 1
@@ -74,11 +75,11 @@ if (p == 0)
 ## Datasets
 
 ## Experiments
-### Efficiency under Parameter Variations
+### 1. Efficiency under Parameter Variations
 ![image](https://github.com/user-attachments/assets/bd66566b-08e4-4b8e-aa09-3c8021076222)
-### Efficiency v.s. Existing Algorithms
+### 2. Efficiency v.s. Existing Algorithms
 ![image](https://github.com/user-attachments/assets/953d3a2e-921c-4539-91be-eb52b396dcc6)
-### Memory Overheads
+### 3. Memory Overheads
 ![image](https://github.com/user-attachments/assets/ca39b3cf-f031-4e0f-962f-4232653fc9b2)
 
 
