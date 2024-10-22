@@ -1,6 +1,20 @@
-# "An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery [SIGMOD 2025]"
-Detecting locally, non-overlapping, near-clique densest subgraphs is a crucial problem for community search in social networks. As a vertex may be involved in multiple overlapped local cliques, detecting locally densest sub-structures considering h-clique density, i.e., locally h-clique densest subgraph (LhCDS) attracts great interests. This paper investigates the LhCDS detection problem and proposes an efficient and exact algorithm to list the top-k non-overlapping, locally h-clique dense, and compact subgraphs. We in particular jointly consider h-clique compact number and LhCDS and design a new "Iterative Propose-Prune-and-Verify" pipeline (IPPV) for top-k LhCDS detection. (1) In the proposal part, we derive initial bounds for h-clique compact numbers; prove the validity, and extend a convex programming method to tighten the bounds for proposing LhCDS candidates without missing any. (2) Then a tentative graph decomposition method is proposed to solve the challenging case where a clique spans multiple subgraphs in graph decomposition. (3) To deal with the verification difficulty, both a basic and a fast verification method are proposed, where the fast method constructs a smaller-scale flow network to improve efficiency while preserving the verification correctness. The verified LhCDSes are returned, while the candidates that remained unsure reenter the IPPV pipeline. (4) We further extend the proposed methods to locally more general pattern densest subgraph detection problems. We prove the exactness and low complexity of the proposed algorithm. Extensive experiments on real datasets show the effectiveness and high efficiency of IPPV.
-## Introduction
+# IPPV (Iterative Propose-Prune-and-Verify)
+[SIGMOD2025] An Efficient and Exact Algorithm for Locally h-Clique Densest Subgraph Discovery
+
+Detecting locally non-overlapping, near-clique densest subgraphs is essential for community search in social networks. Our work introduces an efficient and exact algorithm to tackle this challenge by identifying the top-k non-overlapping, locally h-clique densest subgraphs (LhCDS).
+
+> 检测局部不重叠、接近派系最密集的子图对于社交网络中的社区搜索至关重要。我们的工作引入了一种高效且精确的算法，通过识别 top-k 非重叠、局部 h 团最稠密子图 (LhCDS) 来应对这一挑战。
+
+Key highlights of our approach:
+
+- Iterative Propose-Prune-and-Verify (IPPV) Pipeline: 
+  - [x] Propose: Generate candidates using convex programming without missing any dense substructures.
+  - [x] Prune: Handle overlapping cliques with an advanced graph decomposition technique.
+  - [x] Verify: Use basic and fast verification methods to confirm LhCDS candidates, leveraging a flow network to enhance speed.
+- Generalization: Our approach extends to broader densest subgraph detection problems while ensuring exactness and low computational complexity.
+  - [x] Extensive experiments on real datasets demonstrate the effectiveness and efficiency of our IPPV algorithm.
+
+[ArXiv](https://www.arxiv.org/abs/2408.14022)
 ![image](https://github.com/user-attachments/assets/84075e89-39bb-4122-9172-feacd6308a82)
 Figure 1 shows the relationships between a subset of characters in “Harry Potter”. The top-1 and top-2 L3CDSes are the blue and green subgraphs, respectively. The top-1 L3CDS is a family named Weasley, and the top-2 L3CDS is an organization named Death Eaters, which indicate the potential of LℎCDS discovery for mining diverse dense communities.
 ## Code
@@ -57,6 +71,8 @@ if (p == 0)
         h_cliques_no.push_back(i);
     }
 ```
+## Datasets
+
 ## Experiments
 ### Efficiency under Parameter Variations
 ![image](https://github.com/user-attachments/assets/bd66566b-08e4-4b8e-aa09-3c8021076222)
@@ -69,7 +85,7 @@ if (p == 0)
 
 ## Citation
 
-`
+```
 @article{xu2024efficient,
   author = {Xiaojia Xu and Haoyu Liu and Xiaowei Lv and Yongcai Wang and Deying Li},
   title = {An Efficient and Exact Algorithm for Locally h-Clique Densest Subgraph Discovery},
@@ -82,5 +98,4 @@ if (p == 0)
   pages = {26},
   doi = {10.1145/3698800}
 }
-
-`
+```
