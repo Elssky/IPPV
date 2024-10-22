@@ -70,5 +70,17 @@ if (p == 0)
 ## Citation
 
 `
-Xiaojia Xu, Haoyu Liu, Xiaowei Lv, Yongcai Wang, and Deying Li. 2024. An Efficient and Exact Algorithm for Locally ℎ-Clique Densest Subgraph Discovery. Proc. ACM Manag. Data 2, N6 (SIGMOD), Article 225 (December 2024), 26 pages. https://doi.org/10.1145/3698800
+@article{xu2024efficient,
+  author = {Xiaojia Xu and Haoyu Liu and Xiaowei Lv and Yongcai Wang and Deying Li},
+  title = {An Efficient and Exact Algorithm for Locally h-Clique Densest Subgraph Discovery},
+  journal = {Proc. ACM Manag. Data},
+  volume = {2},
+  number = {N6},
+  article = {225},
+  year = {2024},
+  month = {December},
+  pages = {26},
+  doi = {10.1145/3698800}
+}
+
 `
