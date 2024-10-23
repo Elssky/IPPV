@@ -21,7 +21,7 @@ Figure 1 shows the relationships between a subset of characters in “Harry Pott
 
 ##  Data Preparation
 The input data format is: 
-Fisrt row is `nodes_num edges_num`, then each following row `src_node dst_node` represents an edge. Node is should start from 0, e.g.
+Fisrt row is `nodes_num edges_num`, then each following row `src_node dst_node` represents an edge. Nodes should start from 0, e.g.
 ```csv
 23133 93439
 0 1
