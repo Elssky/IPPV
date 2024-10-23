@@ -14,6 +14,7 @@ Key highlights of our approach:
 - Generalization: Our approach extends to broader densest subgraph detection problems while ensuring exactness and low computational complexity.
   - [x] Extensive experiments on real datasets demonstrate the effectiveness and efficiency of our IPPV algorithm.
 
+
 [ArXiv](https://www.arxiv.org/abs/2408.14022)
 ![image](https://github.com/user-attachments/assets/84075e89-39bb-4122-9172-feacd6308a82)
 Figure 1 shows the relationships between a subset of characters in “Harry Potter”. The top-1 and top-2 L3CDSes are the blue and green subgraphs, respectively. The top-1 L3CDS is a family named Weasley, and the top-2 L3CDS is an organization named Death Eaters, which indicate the potential of LℎCDS discovery for mining diverse dense communities.
@@ -56,8 +57,15 @@ Fisrt row is `nodes_num, edges_num`, then each following row represents an edge.
 
 All the datasets can be downloaded from [network repository](https://networkrepository.com/)
 
-## Code
-`mkdir output` 
+## Installation
+```
+mkdir build
+cd build/
+cmake ..
+make
+```
+## Pipeline
+<img width="978" alt="image" src="https://github.com/user-attachments/assets/2e03e968-be10-4977-87c3-1e78774ba752">
 
  Examples:  
 
@@ -67,6 +75,8 @@ All the datasets can be downloaded from [network repository](https://networkrepo
 
 
 The following are the regular subgraph models we support.
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/e6567574-18e6-4b1e-b941-40988a3dc615">
+
 
 ``` cpp
 if (p == 0)
@@ -101,8 +111,48 @@ if (p == 0)
 ## Experiments
 ### 1. Efficiency under Parameter Variations
 ![image](https://github.com/user-attachments/assets/bd66566b-08e4-4b8e-aa09-3c8021076222)
+Execute the following shell file to obtain the results of this experiment (note: the specific time may vary due to differences in hardware devices)
+```shell
+k_list=(5 10 15 20)
+h_list=(3 4 5)
+v_list=(1 0)
+t=20
+p=0
+data_list=("fb-pages-company" "soc-hamsterster" "soc-epinions" "Email-Enron" "loc-gowalla" "CA-CondMat" "CA-GrQc" "Amazon")
+
+for dataset in ${data_list[@]}
+do
+    if [ -z "$dataset" ]; then
+    echo "Error: The variable 'dataset' is not set."
+    exit 1
+    fi
+
+    # Create the directory if it does not exist
+    mkdir -p "./output/$dataset"
+
+    for k in ${k_list[@]}
+    do
+        for h in ${h_list[@]}
+        do
+            for t in ${t_list[@]}
+            do
+                for s in ${s_list[@]}
+                do
+                    for v in ${v_list[@]}
+                    do
+                    (/usr/bin/time -v nohup ./LDScvx -g ./dataset/${dataset}.txt -h $h -k $k -t $t -p $p -v $v&) >&  ./output/$dataset/${dataset}_LhCDScvx_k=${k}_h=${h}_t=${t}_s=${s}_p=${p}_v=${v}.txt
+                    done
+                done
+            done
+        done
+    done
+done
+
+```
+
 ### 2. Efficiency v.s. Existing Algorithms
 ![image](https://github.com/user-attachments/assets/953d3a2e-921c-4539-91be-eb52b396dcc6)
+The code of LDSflow comes from the author of Locally Densest Subgraph Discovery.
 ### 3. Memory Overheads
 ![image](https://github.com/user-attachments/assets/ca39b3cf-f031-4e0f-962f-4232653fc9b2)
 
