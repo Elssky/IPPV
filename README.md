@@ -16,8 +16,13 @@ Key highlights of our approach:
 
 
 [ArXiv](https://www.arxiv.org/abs/2408.14022)
-![image](https://github.com/user-attachments/assets/84075e89-39bb-4122-9172-feacd6308a82)
-Figure 1 shows the relationships between a subset of characters in “Harry Potter”. The top-1 and top-2 L3CDSes are the blue and green subgraphs, respectively. The top-1 L3CDS is a family named Weasley, and the top-2 L3CDS is an organization named Death Eaters, which indicate the potential of LℎCDS discovery for mining diverse dense communities.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/857f3a91-5bfa-446c-add3-d228c8eda6fd" width="45%">
+  <img src="https://github.com/user-attachments/assets/47d16988-84e6-4c7e-bffa-2872c702d3c1" width="45%">
+</p>
+
+
+Left figure shows the relationships between a subset of characters in “Harry Potter”. The top-1 and top-2 L3CDSes are the blue and green subgraphs, respectively. The top-1 L3CDS is a family named Weasley, and the top-2 L3CDS is an organization named Death Eaters, which indicate the potential of LℎCDS discovery for mining diverse dense communities. While right figure finds L2CDS but mistakenly added Harry Potter to both communities.
 
 ##  Data Preparation
 The input data format is: 
