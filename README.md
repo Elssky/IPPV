@@ -17,8 +17,8 @@ Key highlights of our approach:
 
 [ArXiv](https://www.arxiv.org/abs/2408.14022)
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/917f6ae1-b019-4132-8cb1-7000a2b46966" width="45%">
-  <img src="https://github.com/user-attachments/assets/47d16988-84e6-4c7e-bffa-2872c702d3c1" width="45%">
+  <img src="https://github.com/user-attachments/assets/857f3a91-5bfa-446c-add3-d228c8eda6fd" width="80%">
+<!--   <img src="https://github.com/user-attachments/assets/47d16988-84e6-4c7e-bffa-2872c702d3c1" width="45%"> -->
 </p>
 
 
